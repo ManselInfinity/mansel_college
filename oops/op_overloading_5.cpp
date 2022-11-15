@@ -64,14 +64,14 @@ int main()
     int l;
     cout << "Enter lenght: ";
     cin >> l;
-    vector v1(l), v2(l), v3(l);
+    vector v1(l), v2(l), v3(l), v4(l);
     v2.input();
     cout << "\nEnter v2:\n";
     v3.input();
     v1 = v2 * 5;
-    cout << "V2 * 5 = ";
+    cout << "V1 * 5 = ";
     v1.print();
-    v1 = v2 + v3;
-    cout << "\nv2 + v3 =";
-    v1.print();
+    v4 = v2 + v3;
+    cout << "\nv1 + v2 =";
+    v4.print();
 }
