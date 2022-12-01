@@ -1,54 +1,94 @@
-// Write a C++ program to study implementation of Hybrid form of Inheritance(Virtual Base
-// Class)
 #include <iostream>
 using namespace std;
 
-class A
+class student
 {
 public:
-    int a;
-    A()
+    int number = 100;
+    void disp()
     {
-        a = 10;
+        cout << "\nStudent:"
+             << number;
     }
 };
 
-class B : virtual public A
+class arts : virtual public student
 {
 public:
-    int b;
-    B()
+    int art_marks = 100;
+    void disp()
     {
-        b = 20;
+        cout << "\nArt marks: "
+             << art_marks;
     }
 };
 
-class C : virtual public A
+class engineering : virtual public student
 {
 public:
-    int c;
-    C()
+    int eng_mks = 100;
+    void disp()
     {
-        c = 30;
+        cout << "\nEng marks: "
+             << eng_mks;
     }
 };
 
-class D : public B, public C
+class medical : virtual public student
 {
 public:
-    int d;
-    D()
+    int med_mks = 100;
+    void disp()
     {
-        d = 48;
+        cout << "\nMed marks: "
+             << med_mks;
     }
-    void add()
+};
+
+class mech : virtual public engineering
+{
+public:
+    int mech_mks = 100;
+    // engineering::disp();
+    void disp()
     {
-        cout << "D sum = " << (a + b + c + d);
+        cout << "\nmech marks: "
+             << eng_mks;
+    }
+};
+
+class elect : virtual public engineering
+{
+public:
+    int elect_mks = 100;
+    void disp()
+    {
+        cout << "\nElect marks: "
+             << elect_mks;
+    }
+};
+
+class civil : virtual public engineering
+{
+public:
+    int civil_mks = 100;
+    void disp()
+    {
+        cout << "\nCivil marks: "
+             << civil_mks;
     }
 };
 
 int main()
 {
-    D d;
-    d.add();
+    arts a;
+    medical m;
+    mech mh;
+    elect e;
+    civil c;
+    a.disp();
+    m.disp();
+    mh.disp();
+    e.disp();
+    c.disp();
 }

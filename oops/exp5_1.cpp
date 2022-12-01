@@ -1,49 +1,94 @@
-// Write a C++ program to study implementation of Hierarchical form of Inheritance
 #include <iostream>
 using namespace std;
 
-class A
+class student
 {
 public:
-    int a;
-    A()
+    int number = 100;
+    void disp()
     {
-        a = 10;
+        cout << "\nStudent:"
+             << number;
     }
 };
 
-class B : public A
+class arts : public student
 {
 public:
-    int b;
-    B()
+    int art_marks = 100;
+    void disp()
     {
-        b = 20;
-    }
-    void add()
-    {
-        cout << " B sum= " << (a + b);
+        cout << "\nArt marks: "
+             << art_marks;
     }
 };
 
-class C : public A
+class engineering : public student
 {
 public:
-    int c;
-    C()
+    int eng_mks = 100;
+    void disp()
     {
-        c = 30;
+        cout << "\nEng marks: "
+             << eng_mks;
     }
-    void add()
+};
+
+class medical : public student
+{
+public:
+    int med_mks = 100;
+    void disp()
     {
-        cout << " C sum= " << (a + c);
+        cout << "\nMed marks: "
+             << med_mks;
+    }
+};
+
+class mech : public engineering
+{
+public:
+    int mech_mks = 100;
+    // engineering::disp();
+    void disp()
+    {
+        cout << "\nmech marks: "
+             << eng_mks;
+    }
+};
+
+class elect : public engineering
+{
+public:
+    int elect_mks = 100;
+    void disp()
+    {
+        cout << "\nElect marks: "
+             << elect_mks;
+    }
+};
+
+class civil : public engineering
+{
+public:
+    int civil_mks = 100;
+    void disp()
+    {
+        cout << "\nCivil marks: "
+             << civil_mks;
     }
 };
 
 int main()
 {
-    C c;
-    c.add();
-    B b;
-    b.add();
+    arts a;
+    medical m;
+    mech mh;
+    elect e;
+    civil c;
+    a.disp();
+    m.disp();
+    mh.disp();
+    e.disp();
+    c.disp();
 }

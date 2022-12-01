@@ -1,154 +1,182 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-struct Tnode
+struct treenode
 {
-    char info;
-    struct node *lc, *rc;
+    struct treenode *lchild;
+    int info;
+    struct treenode *rchild;
 };
 
-struct node
+struct listnode
 {
-    char info;
-    struct node *next;
-};
+    int info;
+    struct listnode *next;
+} *postptr = NULL, *inptr = NULL;
 
-struct Tnode *construct_in_post(struct node *inptr, struct node *postptr, int num)
+struct listnode *create_linked_list(struct listnode *start, int n)
 {
-    struct Tnode *temp;
-    struct node *q, *ptr;
+    struct listnode *temp, *p;
+    start = NULL;
+    if (n == 0)
+        return start;
+    for (int i = 0; i < n; i++)
+    {
+        temp = (struct listnode *)malloc(sizeof(struct listnode));
+        scanf("%d", &temp->info);
+        temp->next = NULL;
+        if (start == NULL)
+            start = temp;
+        else
+        {
+            p = start;
+            while (p->next != NULL)
+                p = p->next;
+            p->next = temp;
+        }
+    }
+    return start;
+}
+
+struct treenode *construct_in_post(struct listnode *inptr, struct listnode *postptr, int num)
+{
+    struct treenode *temp;
+    struct listnode *q, *ptr;
     int i, j;
     if (num == 0)
         return NULL;
     ptr = postptr;
     for (i = 1; i < num; i++)
         ptr = ptr->next;
-    temp = (struct Tnode *)malloc(sizeof(struct Tnode));
+    temp = (struct treenode *)malloc(sizeof(struct treenode));
     temp->info = ptr->info;
-    temp->lc = NULL;
-    temp->rc = NULL;
+    temp->lchild = NULL;
+    temp->rchild = NULL;
     if (num == 1)
         return temp;
     q = inptr;
     for (i = 0; q->info != ptr->info; i++)
         q = q->next;
-    temp->lc = construct_in_post(inptr, postptr, i);
+    temp->lchild = construct_in_post(inptr, postptr, i);
     for (j = 1; j <= i; j++)
         postptr = postptr->next;
-    temp->rc = construct_in_post(q->next, postptr, num - i - 1);
+    temp->rchild = construct_in_post(q->next, postptr, num - i - 1);
     return temp;
 }
 
-struct node *ad(struct node *start, int data)
-{
-    struct node *temp, *p;
-    temp = (struct node *)malloc(sizeof(struct node));
-    p = start;
-    temp->info = data;
-    temp->next = NULL;
-    if (start == NULL)
-        start = temp;
-    else
-    {
-        while (p->next != NULL)
-            p = p->next;
-        p->next = temp;
-    }
-    return start;
-}
-
-int height(struct Tnode *ptr)
+int height(struct treenode *ptr)
 {
     int h_left, h_right;
     if (ptr == NULL)
         return 0;
-    h_left = height(ptr->lc);
-    h_right = height(ptr->rc);
+    h_left = height(ptr->lchild);
+    h_right = height(ptr->rchild);
     if (h_left > h_right)
         return 1 + h_left;
     else
         return 1 + h_right;
 }
 
-void levelorder(struct Tnode *ptr)
+int finddepth(struct treenode *ptr, int skey)
 {
-    int h = height(ptr);
-    int i;
-    for (i = 1; i <= h; i++)
-        displaygivenlevel(ptr, i);
+    if (ptr == NULL)
+        return -1;
+    int depth = -1;
+    if ((ptr->info == skey) || (depth = finddepth(ptr->lchild, skey) >= 0) || (depth = finddepth(ptr->rchild, skey) >= 0))
+        return depth;
+    return depth;
 }
-void displaygivenlevel(struct Tnode *ptr, int level)
+
+void displaylr(struct treenode *ptr, int level)
 {
     if (ptr == NULL)
         return;
     if (level == 1)
-        printf("%c ", ptr->info);
+        printf("%d ", ptr->info);
     else if (level > 1)
     {
-        displaygivenlevel(ptr->lc, level - 1);
-        displaygivenlevel(ptr->rc, level - 1);
+        displaylr(ptr->lchild, level - 1);
+        displaylr(ptr->rchild, level - 1);
     }
 }
 
-int node_depth(struct Tnode *ptr, char c, int i)
+void displayrl(struct treenode *ptr, int level)
 {
     if (ptr == NULL)
         return;
-    if (ptr->info == c)
-        return i;
-    node_depth(ptr->lc, c, i++);
-    node_depth(ptr->rc, c, i++);
+    if (level == 1)
+        printf("%d ", ptr->info);
+    else if (level > 1)
+    {
+        displayrl(ptr->rchild, level - 1);
+        displayrl(ptr->lchild, level - 1);
+    }
+}
+
+void levelorder(struct treenode *ptr)
+{
+    int h = height(ptr);
+    for (int i = 1; i <= h; i++)
+        displaylr(ptr, i);
+    printf("\n");
+}
+
+void spiralorder(struct treenode *ptr)
+{
+    int h = height(ptr);
+    for (int i = 1; i <= h; i++)
+    {
+        if (i % 2 == 1)
+            displaylr(ptr, i);
+        else
+            displayrl(ptr, i);
+    }
+    printf("\n");
 }
 
 int main()
 {
-    int n, cho = 0;
-    char m;
-    struct node *inorder = NULL, *postorder = NULL;
-    printf("Enter no of elements: ");
-    scanf("%c", &n);
-
-    printf("\nEnter inorder list: ");
-    for (int i = 0; i < n; i++)
+    struct listnode *start1 = NULL, *start2 = NULL;
+    struct treenode *root1;
+    int num, ch, skey;
+    printf("Enter the number of nodes.\n");
+    scanf("%d", &num);
+    printf("Enter the inorder list.\n");
+    start1 = create_linked_list(start1, num);
+    printf("Enter the postorder list.\n");
+    start2 = create_linked_list(start2, num);
+    root1 = construct_in_post(start1, start2, num);
+    while (1)
     {
-        scanf("%c", &m);
-        ad(&inorder, m);
-    }
-
-    printf("\nEnter postorder list: ");
-    for (int i = 0; i < n; i++)
-    {
-        scanf("%d", &m);
-        ad(&postorder, m);
-    }
-    struct Tnode *T = NULL;
-    T = construct_in_post(inorder, postorder, n);
-
-    while (cho != 5)
-    {
-        printf("Enter : \n1.To Display height of the tree\n2.Return the depth of a given node in the tree\n3.Perform level order traversal\n4.Perform Spiral order traversal\n5.Exit");
-        scanf("%d", &cho);
-        switch (cho)
+        printf("Enter 1 to find height of the tree.\n");
+        printf("Enter 2 to find depth of the given node.\n");
+        printf("Enter 3 to perform level order traversal.\n");
+        printf("Enter 4 to perform spiral order traversal.\n");
+        printf("Enter 5 to exit.\n");
+        scanf("%d", &ch);
+        switch (ch)
         {
         case 1:
-            printf("\nHeight of tree: %d", height(T));
+            printf("The height of the tree is %d.\n", height(root1));
             break;
         case 2:
-            printf("\nEnter node to find depth of: ");
-            scnaf("%c", &m);
-            printf("\nDepth: %d", node_depth(T, m, 0));
+            printf("Enter the value of the node.\n");
+            scanf("%d", &skey);
+            if (finddepth(root1, skey) == -1)
+                printf("Tree is empty or node is not found.\n");
+            else
+                printf("The depth of the node in the tree is %d.\n", finddepth(root1, skey));
             break;
         case 3:
-            printf("\n Level order traversal: ");
-            levelorder(T);
+            levelorder(root1);
             break;
         case 4:
-            /*
-
-            //     do in class maybe
-
-            */
+            spiralorder(root1);
             break;
+        case 5:
+            exit(1);
+        default:
+            printf("Erroneous input.\n");
         }
     }
+    return 0;
 }
